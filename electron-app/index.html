@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>基地边缘竖版视频合成器Pro</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <svg class="filters" aria-hidden="true">
+      <filter id="liquid-displace">
+        <feTurbulence type="fractalNoise" baseFrequency="0.018 0.026" numOctaves="2" seed="8" result="noise" />
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="5" xChannelSelector="R" yChannelSelector="G" />
+      </filter>
+    </svg>
+
+    <main class="app-shell">
+      <header class="window-bar glass-panel lit">
+        <div class="window-actions">
+          <button type="button" data-window="close" aria-label="关闭"><span></span></button>
+          <button type="button" data-window="minimize" aria-label="最小化"><span></span></button>
+          <button type="button" data-window="maximize" aria-label="最大化"><span></span></button>
+        </div>
+        <div class="window-title">基地边缘竖版视频合成器Pro v1.5</div>
+        <div class="window-brand">
+          <span class="window-orb"></span>
+          <span>BaseEdge Studio Tool</span>
+        </div>
+      </header>
+
+      <section class="hero glass-panel lit">
+        <div>
+          <p class="eyebrow">BaseEdge Studio Tool</p>
+          <h1 id="appTitle">基地边缘竖版视频合成器Pro v1.5</h1>
+          <p class="subtitle">拖入横屏视频和封套图，输出固定规格的竖版 MP4。</p>
+        </div>
+        <div class="status-pill lit" id="encoderHint">检测编码器中...</div>
+      </section>
+
+      <nav class="tabs glass-panel lit" data-active="work">
+        <span class="tab-thumb"></span>
+        <button class="tab active" data-tab="work" type="button">操作</button>
+        <button class="tab" data-tab="log" type="button">日志</button>
+      </nav>
+
+      <section class="tab-page active" id="workPage">
+        <div class="drop-grid">
+          <button class="drop-card glass-card lit" id="videoDrop" type="button">
+            <span class="card-glow"></span>
+            <span class="drop-icon" data-icon="video"></span>
+            <strong>横屏视频</strong>
+            <span class="drop-meta" id="videoMeta">MP4 / MOV / MKV</span>
+            <span class="drop-action">点击选择 / 拖入文件</span>
+          </button>
+          <button class="drop-card glass-card lit" id="coverDrop" type="button">
+            <span class="card-glow"></span>
+            <span class="drop-icon" data-icon="image"></span>
+            <strong>封套 PNG</strong>
+            <span class="drop-meta" id="coverMeta">1080 x 1260 PNG</span>
+            <span class="drop-action">点击选择 / 拖入文件</span>
+          </button>
+        </div>
+
+        <section class="section">
+          <h2>输出目录</h2>
+          <div class="glass-card path-row lit">
+            <input id="outputDir" type="text" readonly />
+            <button id="chooseOutput" type="button">选择</button>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2>输出命名</h2>
+          <div class="glass-card form-card lit">
+            <div class="liquid-segment" id="namingSegment" data-value="template">
+              <span class="segment-thumb"></span>
+              <button type="button" class="segment-button active" data-value="template">模板</button>
+              <button type="button" class="segment-button" data-value="custom">自定义</button>
+            </div>
+            <div class="form-grid naming-grid">
+              <label>类型<div class="liquid-select" id="projectTypeSelect" data-value="商单"></div></label>
+              <label class="wide">项目名称<input id="projectName" type="text" placeholder="例如：鸿蒙技术" /></label>
+              <label>版本号<div class="liquid-select combo" id="versionSelect" data-value="V1"></div></label>
+            </div>
+            <label class="full">自定义文件名<input id="customName" type="text" placeholder="直接输入输出文件名" disabled /></label>
+            <div class="preview">预览 <strong id="filenamePreview">【竖版】商单_V1.mp4</strong></div>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2>导出设置</h2>
+          <div class="glass-card form-card lit">
+            <div class="form-grid export-grid">
+              <label>导出质量<div class="liquid-select" id="qualitySelect" data-value="15M"></div></label>
+              <label>编码方式<div class="liquid-select" id="encoderSelect" data-value="auto"></div></label>
+              <div class="hint-strip lit" id="encoderStrip">自动预计使用 GPU / NVENC</div>
+            </div>
+            <details>
+              <summary>高级参数</summary>
+              <div class="form-grid advanced-grid">
+                <label>视频顶部 Y<input id="videoTopY" type="number" value="422" /></label>
+                <label>NVENC CQ<input id="cq" type="number" value="18" min="0" max="51" /></label>
+                <label>Preset<input id="preset" type="text" value="p5" /></label>
+              </div>
+            </details>
+          </div>
+        </section>
+      </section>
+
+      <section class="tab-page" id="logPage">
+        <pre class="log glass-card" id="log"></pre>
+      </section>
+
+      <footer class="footer glass-panel lit">
+        <button class="primary lit" id="startBtn" type="button">开始生成</button>
+        <div class="progress-shell"><div id="progressBar"></div></div>
+      </footer>
+    </main>
+
+    <div id="successSweep" class="success-sweep"></div>
+    <div id="successOverlay" class="success-overlay">
+      <div class="success-card glass-panel lit">
+        <svg class="success-check" viewBox="0 0 120 120" aria-hidden="true">
+          <circle class="check-circle" cx="60" cy="60" r="44"></circle>
+          <path class="check-path" d="M38 62.5 53.5 78 84 43"></path>
+        </svg>
+        <h3>竖版视频已生成</h3>
+        <p class="done-bubble" id="doneBubble"></p>
+        <p id="doneFile"></p>
+        <div class="dialog-actions">
+          <button id="openLocation" type="button">打开文件位置</button>
+          <button id="closeDialog" class="primary" type="button">OK</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="./renderer.js"></script>
+  </body>
+</html>

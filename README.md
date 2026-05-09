@@ -1,72 +1,80 @@
 # 基地边缘竖版视频合成器Pro
 
-当前版本：`1.3`
+当前版本：`v1.5`
 
-一个轻量 Windows 桌面工具：选择横屏视频、封套 PNG、输出目录后，自动生成 `1080x1260` 的竖版封套视频。
+一个轻量 Windows 桌面工具，用于把横屏视频自动合成为固定规格的竖版封套视频。用户选择横屏视频、封套 PNG 和输出命名后，即可生成 `1080x1260` 的竖版 MP4，不需要进入 DaVinci Resolve 手动包装。
 
-## 运行
+## 功能亮点
 
-```powershell
-python app.py
-```
+- 横屏视频与封套 PNG 支持点击选择和拖拽导入
+- 输出画布固定为 `1080x1260`
+- 横屏视频保持比例缩放到宽度 `1080`，视频顶部默认落在 `y=422`
+- 输出帧率固定 `25fps`
+- 支持自动 / NVIDIA NVENC / CPU x264 编码
+- 自动检测 NVENC，自动模式下优先使用 GPU，不支持时回退 CPU
+- 导出质量三档：最佳 `15 Mbps`、高 `8 Mbps`、普通 `6 Mbps`
+- 支持模板命名和自定义命名
+- 选择横屏视频后，默认输出目录自动设置为视频所在目录
+- 生成完成后可打开文件所在位置
+- Liquid Glass 风格界面，包含玻璃质感、动效、高光扫过和完成反馈
 
-需要本机可用 `ffmpeg.exe` 和 `ffprobe.exe`。可以放在本程序同目录，也可以加入系统 `PATH`。
+## 下载使用
 
-## 拖拽支持
-
-已支持把文件拖到对应输入框：
-
-- 视频拖到“横屏视频”
-- PNG 拖到“封套 PNG”
-- 文件夹拖到“输出目录”
-
-拖拽依赖为 `tkinterdnd2`。若换到新机器，可安装：
-
-```powershell
-$env:HTTP_PROXY="http://127.0.0.1:7897"
-$env:HTTPS_PROXY="http://127.0.0.1:7897"
-python -m pip install -r requirements.txt
-```
-
-## 输出命名
-
-命名方式有两种：
-
-- 模板：`【竖版】` + `商单/基地` + `_项目名称` + `版本号`
-- 自定义：直接输入完整文件名；不写 `.mp4` 时会自动补上
-
-模板示例：
+请到 GitHub Releases 下载最新的单文件 exe：
 
 ```text
-【竖版】商单_鸿蒙技术V4.mp4
+基地边缘竖版视频合成器Pro_LiquidGlass_v1.5.exe
 ```
 
-版本号下拉提供 `V1` 到 `V20`，也可以手动输入。
+双击打开后使用：
+
+1. 拖入或选择横屏视频
+2. 拖入或选择封套 PNG
+3. 设置输出命名和导出质量
+4. 点击“开始生成”
 
 ## 输出规格
 
 - 分辨率：`1080x1260`
 - 帧率：`25fps`
-- 视频：优先 `h264_nvenc`，不可用时自动回退 `libx264`
-- 导出质量：最佳 `15Mbps`、高 `8Mbps`、普通 `6Mbps`
-- 音频：`AAC 192k`
+- 视频编码：`h264_nvenc` 或 `libx264`
+- 音频编码：`AAC 192k`
 - 像素格式：`yuv420p`
-- 位置：横屏视频顶部边缘放在画布 `y=422` 的位置，可在高级参数里修改“视频顶部 Y”
+- 封装格式：`MP4`
+- 默认视频顶部位置：`y=422`
 
-## 打包 exe
+## 开发运行
 
-安装 PyInstaller：
+源码在 `electron-app/` 目录。
+
+```powershell
+cd electron-app
+npm install
+npm start
+```
+
+如果需要通过代理安装依赖：
 
 ```powershell
 $env:HTTP_PROXY="http://127.0.0.1:7897"
 $env:HTTPS_PROXY="http://127.0.0.1:7897"
-python -m pip install pyinstaller
+npm install
 ```
 
-打包：
+## 打包
 
 ```powershell
-pyinstaller --noconsole --onefile --name VerticalWrapperGenerator --collect-all tkinterdnd2 app.py
+cd electron-app
+$env:CSC_IDENTITY_AUTO_DISCOVERY="false"
+npm run dist
 ```
 
-打包后可把 `ffmpeg.exe` 和 `ffprobe.exe` 放到 exe 同目录，或者继续使用系统 `PATH` 中的 FFmpeg。
+打包产物位于：
+
+```text
+electron-app/dist/基地边缘竖版视频合成器Pro_LiquidGlass_v1.5.exe
+```
+
+## FFmpeg
+
+发布包内已随应用携带 `ffmpeg.exe` 和 `ffprobe.exe`。开发环境中需要将它们放在项目根目录，或加入系统 `PATH`。

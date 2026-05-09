@@ -1,0 +1,42 @@
+{
+  "name": "baseedge-vertical-composer",
+  "version": "1.5.0",
+  "description": "基地边缘竖版视频合成器Pro",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win portable"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "UNLICENSED",
+  "type": "commonjs",
+  "build": {
+    "appId": "com.baseedge.verticalcomposer",
+    "productName": "基地边缘竖版视频合成器Pro",
+    "files": [
+      "**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "../ffmpeg.exe",
+        "to": "ffmpeg.exe"
+      },
+      {
+        "from": "../ffprobe.exe",
+        "to": "ffprobe.exe"
+      }
+    ],
+    "win": {
+      "target": "portable",
+      "signAndEditExecutable": false
+    },
+    "portable": {
+      "artifactName": "基地边缘竖版视频合成器Pro_LiquidGlass_v1.5.exe"
+    }
+  },
+  "devDependencies": {
+    "electron": "^42.0.0",
+    "electron-builder": "^26.8.1"
+  }
+}
